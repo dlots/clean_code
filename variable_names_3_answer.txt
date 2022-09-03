@@ -1,0 +1,55 @@
+7.1.
+parsed - is_parsing_complete
+
+valid - is_valid
+
+leaf - is_leaf
+
+planar - is_planar
+
+not_reachable - is_reachable
+
+
+7.2.
+def search_by_phone(self, phone):
+    success = self.execute("SELECT SearchPatientByPhone('"+phone+"');")
+    if success:
+        data = self.cursor.fetchall()
+        if not data:
+            return "empty"
+        else:
+            return self.parse_data(data)
+    else:
+        return False
+
+
+7.3.
+for neighbor in neighbors:
+// перебор инцидентных вершине графа вершин
+
+7.4. Попробуйте найти в своих решениях два-три случая, когда можно использовать пары имён - антонимы.
+min_edge_weight, max_edge_weight
+
+edges_in_solution = [], edges_not_in_solution = []
+
+
+7.5.
+bit - index_of_bit_to_set
+// индекс бита в 32-битном числе, значение которого нужно изменить на 1
+
+bottom - value_of_list_tail
+// значение, хранящееся в "хвосте" связного списка
+
+first - first_operand
+// первое из значений, над которыми будет совершена операция, когда в стэке выражения встретится оператор
+
+// тут можно избавитсья от переменной doc
+def change_rich_label(rich_text_label, new_text):
+    doc = QTextDocument()
+    doc.setHtml(rich_text_label.text())
+    old_text = doc.toPlainText()
+    rich_text_label.setText(rich_text_label.text().replace(old_text, new_text))
+//исправить вот так:
+def change_rich_label(rich_text_label, new_text):
+    old_text = QTextDocument().setHtml(rich_text_label.text()).toPlainText()
+    rich_text_label.setText(rich_text_label.text().replace(old_text, new_text))
