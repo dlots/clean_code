@@ -1,0 +1,28 @@
+time - execution_time_sec
+// время выполнения участка кода в секундах
+
+doctors, doctors_dict - doctors_db_data, doctors_dict
+patients, patients_dict - patients_db_data, patients_dict
+services, services_dict - services_db_data, services_dict
+// данные запрашивались из базы данных, после чего представлялись в виде словаря Python
+// лучше наглядно обозначить, в какой форме данные были до и после
+
+current_data, data - current_data, new_data
+// нагляднее показать различие переменных
+ 
+search_string, search - search_string, search_signal
+// строка для поиска и сигнал Qt
+
+delete - delete_signal
+// переименовал по аналогии с search_signal
+
+neighbor_1st - first_neighbor
+// убрал цифру
+
+total_time - time_total
+
+dummy_variable - dummy
+
+max - max_cost
+
+patients_table - patients
