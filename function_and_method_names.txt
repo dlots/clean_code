@@ -1,0 +1,33 @@
+find_next_3_vertex_or_leaf - find_next_3_vertex_or_leaf_while_solving_cover
+// упоминание того, что метод не только находит нужную вершину, но и изменяет
+
+covered_star - is_star_covered
+// корректное имя для предиката
+
+weighted_halin_graph - generate_weighted_halin_graph
+// глагол+объект
+
+find_cycle - find_cycle_in_halin_graph
+// уточнение контекста
+
+nx_to_adj_list - adjacency_list_from_nx_graph
+// уточнение, что не исходный объект изменяется, а на его основе конструируется новый
+
+cost_two_side_edges_path - get_cost_of_side_edges_path
+cost_center_and_side_edge_path - get_cost_of_center_and_side_edge_path
+// с глаголом более читаемо
+
+shrink_fan - save_and_shrink_fan
+// отразить в названии метода то, что веер графа будет не только сведен к вершине, но и сохранен в стеке для последующего восстановления
+
+restore_fan - restore_latest_shrinked_fan
+// отразить то, что восстановлен будет именно последний сохраненный веер
+
+change_rich_label - replace_text_in_rich_label
+// уточнить, что именно будет изменено
+
+send_data - save_appointment
+// более выразительное имя; непонятно было, что за данные, и куда они отправляются
+
+execute - execute_sql_query
+// более выразительное имя
