@@ -1,0 +1,21 @@
+3.1.
+AddAppointmentDialog - NewAppointmentDialog
+SetDateDialog - DateDialog
+ParseResponse - ResponseParser
+// использование глаголов порождает двусмысленность
+
+OperationsHistoryInfo - OperationsHistory
+// слово не несущее смысловой нагрузки
+
+VCP3 - vertex_cover_P3_solver
+// полноценное имя вместо сокращения
+
+
+3.2.
+DatabaseManager, TableHandler - DatabaseHandler, TableHandler
+fetch_customers, get_operations - get_customers, get_operations
+delete_table, remove_record - delete_table, delete_record
+find_customer_by_phone_number, search_doctors_by_speciality - search_customer_by_phone_number, search_doctors_by_speciality
+edit_date, change_phone_number - edit_date, edit_phone_number
+create_customer, add_product - add_customer, add_product
+compute_vertex_cover, find_spanning_tree - find_vertex_cover, find_spanning_tree
