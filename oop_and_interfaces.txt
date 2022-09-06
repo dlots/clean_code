@@ -1,0 +1,23 @@
+3.1.
+// Класс Graph имеет три конструктора, которые объявлены приватными и обернуты статическими фабричными методами.
+class Graph {
+public:
+  static Graph fromAdjacencyList(const std::string& adjacencyList) { return Graph(adjacencyList); }
+  static Graph fromEdgesList(const std::vector<std::pair<uint16_t, uint16_t>>& edges) { return Graph(edges); }
+  static Graph fromGraph(const Graph& graph) { return Graph(graph); }
+
+private:
+  Graph(const std::string& adjacencyList) { <код> }
+  Graph(const std::vector<std::pair<uint16_t, uint16_t>>& edges) { <код> }
+  Graph(const Graph& graph) { <код> }
+};
+
+3.2.
+AbstractTree
+// Базовый класс для двоичных деревьев поиска.
+
+SipDevice
+// интерфейс для различных типов устрйоств, реализующих функциональность SIP телефонии
+
+Socket
+// интерфйейс для классов, реализующих обертку над сокетами различных операционных систем
