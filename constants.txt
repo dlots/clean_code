@@ -1,0 +1,192 @@
+1. 
+было:
+self.send_date.emit(self.row, self.date_edit.text().replace('.', '/'))
+
+стало:
+DATE_SEPARATOR_DOT = '.'
+DATE_SEPARATOR_SLASH = '.'
+self.send_date.emit(self.row, self.date_edit.text().replace(DATE_SEPARATOR_DOT, DATE_SEPARATOR_SLASH))
+
+
+2.
+было:
+def edit_date(self, row, date):
+    self.row = row
+    date_split = date.split('-')
+    date_split = [int(date) for date in date_split]
+    self.date_edit.setDate(QDate(date_split[0], date_split[1], date_split[2]))
+    self.show()
+
+стало:
+DATE_SEPARATOR_HYPHEN = '-'
+DATE_INDEX_YEAR = 0
+DATE_INDEX_MONTH = 1
+DATE_INDEX_DAY = 2
+def edit_date(self, row, date):
+    self.row = row
+    date_split = date.split(DATE_SEPARATOR_HYPHEN)
+    date_split = [int(date) for date in date_split]
+    self.date_edit.setDate(QDate(date_split[DATE_INDEX_YEAR], date_split[DATE_INDEX_MONTH], date_split[DATE_INDEX_DAY]))
+    self.show()
+    
+    
+3.
+было:
+ voxel[0] += color[0] * color[0]
+    voxel[1] += color[1] * color[1]
+    voxel[2] += color[2] * color[2]
+    voxel[3] += labels[vertex_index]
+    voxel[4] += 1
+
+стало:
+class RGBA(IntEnum):
+    RED = 0,
+    GREEN = 1,
+    BLUE = 2
+    
+class VoxelData(IntEnum):
+    RED = RGBA.RED,
+    GREEN = RGBA.GREEN,
+    BLUE = RGBA.BLUE,
+    LABEL = 3,
+    LENGTH = 4,
+    NUMBER_OF_ATTRIBUTES = 5
+    
+voxel[VoxelData.RED] += color[RGBA.RED] * color[RGBA.RED]
+    voxel[VoxelData.GREEN] += color[RGBA.GREEN] * color[RGBA.GREEN]
+    voxel[VoxelData.BLUE] += color[RGBA.BLUE] * color[RGBA.BLUE]
+    voxel[VoxelData.LABEL] += labels[vertex_index]
+    voxel[VoxelData.LENGTH] += 1
+    
+    
+4.
+было:
+voxel_x = np.floor(normalized_x * 64)
+voxel_y = np.floor(normalized_y * 64)
+voxel_z = np.floor(normalized_z * 64)
+
+стало:
+VOXEL_GRID_DIM_X_LENGTH = 64
+VOXEL_GRID_DIM_Y_LENGTH = 64
+VOXEL_GRID_DIM_Z_LENGTH = 64
+voxel_x = np.floor(normalized_x * VOXEL_GRID_DIM_X_LENGTH)
+voxel_y = np.floor(normalized_y * VOXEL_GRID_DIM_Y_LENGTH)
+voxel_z = np.floor(normalized_z * VOXEL_GRID_DIM_Z_LENGTH)
+
+
+5.
+было:
+for x in range(len(voxel_grid[0])):
+    for y in range(len(voxel_grid[1])):
+        for z in range(len(voxel_grid[2])):
+            voxel = voxel_grid[x][y][z]
+                    
+стало:
+VOXEL_GRID_DIM_X = 0
+VOXEL_GRID_DIM_Y = 1
+VOXEL_GRID_DIM_Z = 2
+for x in range(len(voxel_grid[VOXEL_GRID_DIM_X])):
+    for y in range(len(voxel_grid[VOXEL_GRID_DIM_Y])):
+        for z in range(len(voxel_grid[VOXEL_GRID_DIM_Z])):
+            voxel = voxel_grid[x][y][z]
+
+
+6.
+было:
+for (size_t i = 0; i < 100; )
+
+стало:
+const size_t MAX_FERMA_TEST_ITERATIONS = 100;
+for (size_t i = 0; i < MAX_FERMA_TEST_ITERATIONS; )
+
+
+7.
+было:
+Код обхода графа использует строки 'white', 'gray', 'black' для обозначения непосещенных, находящихся в обработке, и посещенных вершин, соответсвенно.
+Строки не выделены в константы, а также цветовое кодирование не является очевидным для другого читателя кода.
+
+стало:
+VERTEX_NOT_VISITED = 0
+VERTEX_IN_PROCESSING = 1
+VERTEX_PROCESSED = 2
+Теперь вместо магических строк используются "константы".
+
+
+8.
+было:
+Данные о весе ребра графа хранятся в словаре по ключу 'weight'. В коде эта строка повторяется каждый раз.
+
+стало:
+EDGE_WEIGHT_KEY = 'weight'
+
+
+9.
+было:
+При поиске и проверке вершинного покрытия путей длины 3 в графе проверяется наличие пути из 3 вершин, одна из которых не входит в покрытие.
+В коде есть выражения вида "current_path_length % 3" или "current_unmarked_path_length == 3".
+
+стало:
+MAX_UNMARKED_PATH_LENGTH = 3
+
+10.
+было:
+Алгоритм работает с графом, в котором все вершины имеют степень не более трех. Числа 1, 2, 3 в коде не вынесены в константы.
+В тексте работы вершины степени 1 называются листьями; вершины степени 2 называются 2-вершинами, вершины степени 3 называются 3-вершинами.
+Следует объявить "константы".
+
+стало:
+LEAF_DEGREE = 1
+TWO_VERTEX_DEGREE = 2
+THREE_VERTEX_DEGREE = 3
+
+
+11.
+было:
+class BloomFilter:
+    def hash1(self, str1):
+        result = 0
+        for c in str1:
+            result = (result * 17 + ord(c)) % self.filter_len
+        return result
+
+    def hash2(self, str1):
+        result = 0
+        for c in str1:
+            result = (result * 223 + ord(c)) % self.filter_len
+        return result
+
+стало:
+class BloomFilter:
+    def hash1(self, str1):
+        FIRST_HASH_NUMBER = 17
+        result = 0
+        for c in str1:
+            result = (result * FIRST_HASH_NUMBER + ord(c)) % self.filter_len
+        return result
+
+    def hash2(self, str1):
+        SECOND_HASH_NUMBER = 223
+        result = 0
+        for c in str1:
+            result = (result * SECOND_HASH_NUMBER + ord(c)) % self.filter_len
+        return result
+
+
+12.
+было:
+albumentations_transform = albumentations.Compose([
+    albumentations.Resize(64, 64),
+    albumentations.RandomCrop(55, 55),
+    atorch.ToTensorV2()
+])
+
+стало:
+DIM_X = 64
+DIM_Y = 64
+CROPPED_DIM_X = 55
+CROPPED_DIM_Y = 55
+albumentations_transform = albumentations.Compose([
+    albumentations.Resize(DIM_X, DIM_Y),
+    albumentations.RandomCrop(CROPPED_DIM_X, CROPPED_DIM_Y),
+    atorch.ToTensorV2()
+])
