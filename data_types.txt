@@ -1,0 +1,108 @@
+1. Избавился от "магических символов".
+было:
+self.send_date.emit(self.row, self.date_edit.text().replace('.', '/'))
+
+стало:
+DATE_SEPARATOR_DOT = '.'
+DATE_SEPARATOR_SLASH = '.'
+self.send_date.emit(self.row, self.date_edit.text().replace(DATE_SEPARATOR_DOT, DATE_SEPARATOR_SLASH))
+
+
+2. Избавился от "магических символов".
+было:
+def edit_date(self, row, date):
+    self.row = row
+    date_split = date.split('-')
+    date_split = [int(date) for date in date_split]
+    self.date_edit.setDate(QDate(date_split[0], date_split[1], date_split[2]))
+    self.show()
+
+стало:
+DATE_SEPARATOR_HYPHEN = '-'
+DATE_INDEX_YEAR = 0
+DATE_INDEX_MONTH = 1
+DATE_INDEX_DAY = 2
+def edit_date(self, row, date):
+    self.row = row
+    date_split = date.split(DATE_SEPARATOR_HYPHEN)
+    date_split = [int(date) for date in date_split]
+    self.date_edit.setDate(QDate(date_split[DATE_INDEX_YEAR], date_split[DATE_INDEX_MONTH], date_split[DATE_INDEX_DAY]))
+    self.show()
+
+
+3. Избавился от "магических строк".
+было:
+Код обхода графа использует строки 'white', 'gray', 'black' для обозначения непосещенных, находящихся в обработке, и посещенных вершин, соответсвенно.
+Строки не выделены в константы, а также цветовое кодирование не является очевидным для другого читателя кода.
+
+стало:
+VERTEX_NOT_VISITED = 0
+VERTEX_IN_PROCESSING = 1
+VERTEX_PROCESSED = 2
+Теперь вместо магических строк используются "константы".
+
+
+4. Избавился от "магических строк".
+было:
+Данные о весе ребра графа хранятся в словаре по ключу 'weight'. В коде эта строка повторяется каждый раз.
+
+стало:
+EDGE_WEIGHT_KEY = 'weight'
+
+
+5. Повысил читаемость логических условий.
+было:
+if self.load_procedures(self.create_db_function_script_path) and self.execute("SELECT CreateDB('"+name+"');", "ERROR CREATING DB"):
+    self.close_connection()
+    self.make_connection(name, self.hostname, self.username, self.password)
+    if "NOTICE:  Database already exists\n" in self.conn.notices:
+        print('Database already exists. Skipping sample data creation.')
+        return self.database_exists
+
+стало:
+procedures_loaded = self.load_procedures(self.create_db_function_script_path)
+db_ok = self.execute("SELECT CreateDB('"+name+"');", "ERROR CREATING DB")
+if procedures_loaded and db_ok:
+    self.close_connection()
+    self.make_connection(name, self.hostname, self.username, self.password)
+    db_exists = "NOTICE:  Database already exists\n" in self.conn.notices
+    if db_exists:
+        print('Database already exists. Skipping sample data creation.')
+        return self.database_exists
+        
+        
+6. Избавился от "магических строк".
+было:
+db_exists = "NOTICE:  Database already exists\n" in self.conn.notices
+
+стало:
+notice_db_already_exists = "NOTICE:  Database already exists\n"
+db_exists = notice_db_already_exists in self.conn.notices
+
+
+7. Устранил ненужное неявное приведение типов.
+было:
+В проекте на работе время выполнения миссии (в минутах) сохраняется на сервере.
+Приложение в последующих миссиях запрашивает эти данные с сервера, и показывает пользователю, сколько примерно осталось до завершения.
+Я обнаружил следующую небрежность: класс, который запрашвиает данные с сервера, создает структуру,
+  и возвращает промежуточному классу, использует для хранения тип int16_t.
+Промежуточный класс, который удаляет оценки с низкой достоверностью, использует тип int.
+Наконец, класс, который запрашивал данные, хранит оценки в переменной типа int64_t.
+То есть неявное преобразование происходит целых 3 раза! Причем присутствуют также арифметические операции.
+
+стало:
+Поменял тип во всех классах, использующих time estimates, на int16_t. 2^16 минут достаточно, так как миссия не может длиться более нескольких часов.
+
+
+8. Упростил сложное логическое условие: 
+было:
+if (!preferencesHandler || !preferencesHandler->readPreference(ApplicationConstants::TimelineEnabled, ApplicationConstants::TimelineEnabledDefaultValue)) {
+    return;
+}
+
+стало:
+bool timelineEnabled = preferencesHandler
+                       && preferencesHandler->readPreference(ApplicationConstants::TimelineEnabled, ApplicationConstants::TimelineEnabledDefaultValue);
+if (!timelineEnabled) {
+    return;
+}
