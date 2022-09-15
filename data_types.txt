@@ -106,3 +106,93 @@ bool timelineEnabled = preferencesHandler
 if (!timelineEnabled) {
     return;
 }
+
+
+9. Переполнение. Уровень силы персонажа не должен обнуляться при достижении максимального значения.
+было: 
+class Character
+{
+public:
+    void Character::addLevel()
+    {
+        level += 1;
+    }
+
+...
+
+private:
+    unsigned int level;
+};
+
+стало:
+void Character::addLevel()
+{
+    if (level == UINT_MAX) {
+        return;
+    }
+    level += 1;
+}
+
+
+10. Деление на ноль. Святилище в игре раздает опыт всем, кто находятся рядом.
+class Shrine {
+public:
+    void giveExperienceInRadius()
+    {
+        if (auto mapSharedPtr = map.lock()) {
+            auto numberOfCharactersNearby = mapSharedPtr->getNumberOfCharactersNearby(radius);
+            emitExperience(totalExperienceGiven / numberOfCharactersNearby);
+        }
+    }
+    
+    void emitExperience(unsigned int experienceGivenToSingleCharacter) {
+     ...
+    }
+    
+private:
+    std::weak_ptr<Map> map;
+    unsigned short radius;
+    unsigned int totalExperienceGiven;
+};
+
+стало:
+void giveExperienceInRadius()
+{
+    unsigned int numberOfCharactersNearby = 0;
+    if (auto mapSharedPtr = map.lock()) {
+        numberOfCharactersNearby = mapSharedPtr->getNumberOfCharactersNearby(radius);
+    }
+    
+    if (numberOfCharactersNearby != 0) {
+        emitExperience(totalExperienceGiven / numberOfCharactersNearby);
+    }
+}
+
+
+11. Переполнение при умножении
+было:
+class Warrior {
+public:
+    multiplyAttackPower(unsigned short multiplier) {
+        attackPower *= multiplier;
+    }
+    
+private:
+    unsigned int attackPower;
+}
+
+стало:
+multiplyAttackPower(unsigned short multiplier) {
+    unsigned int newAttackPower = attackPower * multiplier;
+    if ((multiplier != 0) && (newAttackPower / multiplier != attackPower)) {
+        attackPower = MAX_UINT;
+    }
+}
+
+
+12. 
+было:
+float growthRate;
+
+стало: 
+double growthRate;
