@@ -1,0 +1,341 @@
+1. Переменная pos объявлена задолго до использования
+было:
+pos = planar_layout(graph)
+draw_planar(graph, with_labels=True)
+weights = get_edge_attributes(graph, 'weight')
+draw_networkx_edge_labels(graph, pos, weights)
+plt.show()
+    
+стало:
+draw_planar(graph, with_labels=True)
+pos = planar_layout(graph)
+weights = get_edge_attributes(graph, 'weight')
+draw_networkx_edge_labels(graph, pos, weights)
+plt.show()
+
+
+2. Переменная pos объявлена задолго до использования
+было:
+pos = spring_layout(graph)
+color_map = []
+for vertex in graph:
+    if color_key in graph.nodes[vertex]:
+        color_map.append(graph.nodes[vertex][color_key])
+    else:
+        color_map.append('deepskyblue')
+plt.figure(figsize=(12, 12))
+draw(graph, pos, with_labels=True, edge_color=edge_colors, node_color=color_map, node_size=100, font_size=20)
+weights = get_edge_attributes(graph, 'weight')
+draw_networkx_edge_labels(graph, pos, weights)
+plt.show()
+    
+стало:
+color_map = []
+for vertex in graph:
+    if color_key in graph.nodes[vertex]:
+        color_map.append(graph.nodes[vertex][color_key])
+    else:
+        color_map.append('deepskyblue')
+plt.figure(figsize=(12, 12))
+pos = spring_layout(graph)
+draw(graph, pos, with_labels=True, edge_color=edge_colors, node_color=color_map, node_size=100, font_size=20)
+weights = get_edge_attributes(graph, 'weight')
+draw_networkx_edge_labels(graph, pos, weights)
+plt.show()
+
+
+3. Поля класса инициализированы не в конструкторе
+было:
+class DatabaseHandler:
+    default_db_name = "postgres"
+    create_db_function_script_path = "sql/create_database.sql"
+    functions_and_procedures_script_path = "sql/procedures.sql"
+
+    create_error = -1
+    database_created = 0
+    database_exists = 1
+
+    def __init__(self):
+        self.conn = None
+        self.cursor = None
+        self.hostname = "127.18.0.3"
+        self.username = "postgres"
+        self.password = "changeme"
+        self.db_name = None
+
+стало:
+class DatabaseHandler:
+    def __init__(self):
+        self.conn = None
+        self.cursor = None
+        self.hostname = "127.18.0.3"
+        self.username = "postgres"
+        self.password = "changeme"
+        self.db_name = None
+        self.default_db_name = "postgres"
+        self.create_db_function_script_path = "sql/create_database.sql"
+        self.functions_and_procedures_script_path = "sql/procedures.sql"
+        self.create_error = -1
+        self.database_created = 0
+        self.database_exists = 1
+        
+        
+4. Переменная объявлена не там где используется
+было:
+procedures_loaded = self.load_procedures(self.create_db_function_script_path)
+db_ok = self.execute("SELECT CreateDB('"+name+"');", "ERROR CREATING DB")
+db_exists = "NOTICE:  Database already exists\n" in self.conn.notices
+if procedures_loaded and db_ok:
+    self.close_connection()
+    self.make_connection(name, self.hostname, self.username, self.password)
+    if db_exists:
+        print('Database already exists. Skipping sample data creation.')
+
+стало:
+procedures_loaded = self.load_procedures(self.create_db_function_script_path)
+db_ok = self.execute("SELECT CreateDB('"+name+"');", "ERROR CREATING DB")
+if procedures_loaded and db_ok:
+    self.close_connection()
+    self.make_connection(name, self.hostname, self.username, self.password)
+    db_exists = "NOTICE:  Database already exists\n" in self.conn.notices
+    if db_exists:
+        print('Database already exists. Skipping sample data creation.')
+        
+        
+5. На работе во время выполнения задачи наткнулся на метод, в котором переменные были объявлены все вместе в начале метода.
+Переписал его согласно рекомендациям. Не могу прикрепить код по NDA.
+
+
+6. Деинициализация 
+было:
+side_edges = []
+counter = 0
+for i in range(-1, len(leaves) - 1):
+    for adj in self.graph.neighbors(leaves[i]):
+        if adj not in current_fan:
+            side_edges.append((leaves[i], adj))
+            counter += 1
+        if counter > 1:
+            break
+    if counter > 1:
+        break
+        
+стало:
+side_edges = []
+counter = 0
+for i in range(-1, len(leaves) - 1):
+    for adj in self.graph.neighbors(leaves[i]):
+        if adj not in current_fan:
+            side_edges.append((leaves[i], adj))
+            counter += 1
+        if counter > 1:
+            break
+    if counter > 1:
+        break
+counter = None
+
+
+7. Деинициализация
+было:
+cycle_cost = 0
+for edge in cycle_edges:
+    cycle_cost += self.get_edge_cost(edge)
+cost_of_path_through_center_and_side_0 = self.cost_center_and_side_edge_path(cycle_cost, fan_center,
+                                                                             opposite_side_edge=side_edges[1])
+cost_of_path_through_center_and_side_1 = self.cost_center_and_side_edge_path(cycle_cost, fan_center,
+                                                                             opposite_side_edge=side_edges[0])
+cost_of_path_through_side_edges, min_delta_edge = self.cost_two_side_edges_path(cycle_cost, cycle_edges,
+                                                                                fan_center)
+                                                                                
+стало:
+cycle_cost = 0
+for edge in cycle_edges:
+    cycle_cost += self.get_edge_cost(edge)
+cost_of_path_through_center_and_side_0 = self.cost_center_and_side_edge_path(cycle_cost, fan_center,
+                                                                             opposite_side_edge=side_edges[1])
+cost_of_path_through_center_and_side_1 = self.cost_center_and_side_edge_path(cycle_cost, fan_center,
+                                                                             opposite_side_edge=side_edges[0])
+cost_of_path_through_side_edges, min_delta_edge = self.cost_two_side_edges_path(cycle_cost, cycle_edges,
+                                                                                fan_center)
+cycle_cost = None
+
+
+8. Деинициализация
+было:
+fake_side_edge_0 = (center_edge[0], side_edge_0[1])
+fake_side_edge_1 = (center_edge[0], side_edge_1[1])
+self.graph.remove_edge(*fake_side_edge_0)
+self.graph.remove_edge(*fake_side_edge_1)
+
+стало:
+fake_side_edge_0 = (center_edge[0], side_edge_0[1])
+fake_side_edge_1 = (center_edge[0], side_edge_1[1])
+self.graph.remove_edge(*fake_side_edge_0)
+self.graph.remove_edge(*fake_side_edge_1)
+fake_side_edge_0 = None
+fake_side_edge_1 = None
+
+
+9. Деинициализация
+было:
+path_length = 1
+while self.__graph.degree(current_vertex) == 2:
+    if path_length % 3 == 2:
+        self.__iteration_candidates[current_vertex] = True
+    path_length += 1
+    for neighbor in self.__graph.neighbors(current_vertex):
+        if neighbor != previous_vertex:
+            previous_vertex = current_vertex
+            current_vertex = neighbor
+            break
+
+since_last_candidate = path_length % 3
+
+стало:
+path_length = 1
+while self.__graph.degree(current_vertex) == 2:
+    if path_length % 3 == 2:
+        self.__iteration_candidates[current_vertex] = True
+    path_length += 1
+    for neighbor in self.__graph.neighbors(current_vertex):
+        if neighbor != previous_vertex:
+            previous_vertex = current_vertex
+            current_vertex = neighbor
+            break
+
+since_last_candidate = path_length % 3
+path_length = None
+
+
+10. Деинициализация
+было:
+left_star_covered, left_neighbors_candidates_sum = self.__is_star_covered(left_center)
+if not left_star_covered:
+    if left_neighbors_candidates_sum == 0:
+        self.__iteration_candidates[left_center] = True
+    else:
+        if self.__iteration_candidates[left_bridge_side]:
+            # candidate on bridge; take one of sides; not the side we came from (previous is 3-3 covered)
+            for neighbor in self.__graph.neighbors(left_center):
+                if neighbor == left_bridge_side or neighbor == parent_vertex:
+                    continue
+                else:
+                    self.__iteration_candidates[neighbor] = True
+                    break
+        else:  # candidate on side, need to take left_bridge_side to take cover more far away
+        
+стало:
+left_star_covered, left_neighbors_candidates_sum = self.__is_star_covered(left_center)
+if not left_star_covered:
+    if left_neighbors_candidates_sum == 0:
+        self.__iteration_candidates[left_center] = True
+    else:
+        if self.__iteration_candidates[left_bridge_side]:
+            # candidate on bridge; take one of sides; not the side we came from (previous is 3-3 covered)
+            for neighbor in self.__graph.neighbors(left_center):
+                if neighbor == left_bridge_side or neighbor == parent_vertex:
+                    continue
+                else:
+                    self.__iteration_candidates[neighbor] = True
+                    break
+        else:  # candidate on side, need to take left_bridge_side to take cover more far away
+            self.__iteration_candidates[left_bridge_side] = True
+            self.__iteration_candidates[left_bridge_side] = True
+left_star_covered = None
+left_neighbors_candidates_sum = None
+
+
+11. Инвариант. Проверка что запрашивается одна из существующих таблиц.
+было:
+def get_table(self, table):
+success = False
+if table.lower() == "doctor":
+    success = self.execute("SELECT PrintDoctors();")
+if table.lower() == "patient":
+    success = self.execute("SELECT PrintPatients();")
+if table.lower() == "service":
+    success = self.execute("SELECT PrintServices();")
+if table.lower() == "logbook":
+    success = self.execute("SELECT PrintLogbook();")
+if success:
+    data = self.cursor.fetchall()
+    if not data:
+        return "empty"
+    else:
+        return self.parse_data(data)
+else:
+    return False
+    
+стало:
+def get_table(self, table):
+success = False
+if table.lower() == "doctor":
+    success = self.execute("SELECT PrintDoctors();")
+elif table.lower() == "patient":
+    success = self.execute("SELECT PrintPatients();")
+elif table.lower() == "service":
+    success = self.execute("SELECT PrintServices();")
+elif table.lower() == "logbook":
+    success = self.execute("SELECT PrintLogbook();")
+else:
+    raise ValueError
+...
+
+
+12. Инвариант. Проверка индекса таблицы.
+было:
+def edit_date(self, row, date):
+    self.row = row
+    date_split = date.split('-')
+    date_split = [int(date) for date in date_split]
+    self.date_edit.setDate(QDate(date_split[0], date_split[1], date_split[2]))
+    self.show()
+
+стало:
+def edit_date(self, row, date):
+    if row < 0:
+      raise IndexError
+    self.row = row
+    date_split = date.split('-')
+    date_split = [int(date) for date in date_split]
+    self.date_edit.setDate(QDate(date_split[0], date_split[1], date_split[2]))
+    self.show()
+    
+
+13 Инвариант
+было:
+def reserve_table(table_number, time):
+  self.database_handler.create_reservation(table_number, time)
+  
+стало:
+def reserve_table(table_number, time):
+  if table_number < 1 or table_number > 20:
+    raise ValueError
+  self.database_handler.create_reservation(table_number, time)
+
+
+14 Инвариант
+было:
+def book_meeting(start_time, end_time, room):
+  self.database_handler.create_meeting(start_time, end_time, room)
+
+стало:
+def book_meeting(start_time, end_time, room):
+  if start_time >= end_time:
+    raise ValueError
+  self.database_handler.create_meeting(start_time, end_time, room)
+  
+
+15 Инвариант
+было:
+def send_message(phone_number, text):
+  self.network.send_message(phone_number, text)
+
+стало:
+def send_message(phone_number, text):
+  correct_length = len(phone_number) == 10
+  correct_format = all(symbol in string.digits for symbol in phone_number)
+  empty_text = len(text) == 0
+  if not correct_length or not correct_format or empty_text:
+    raise ValueError
+  self.network.send_message(phone_number, text)
