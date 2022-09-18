@@ -1,0 +1,106 @@
+1. Во время работы обнаружил метод, в котором все переменные были объявлены в начале.
+Отрефакторил, перенеся объявления переменных в блоки кода, где они используются. Не могу прикрепить пример (NDA).
+
+
+2. Уменьшил область видимости переменной
+было:
+procedures_loaded = self.load_procedures(self.create_db_function_script_path)
+db_ok = self.execute("SELECT CreateDB('"+name+"');", "ERROR CREATING DB")
+db_exists = "NOTICE:  Database already exists\n" in self.conn.notices
+if procedures_loaded and db_ok:
+    self.close_connection()
+    self.make_connection(name, self.hostname, self.username, self.password)
+    if db_exists:
+        print('Database already exists. Skipping sample data creation.')
+        return self.database_exists
+        
+стало:
+procedures_loaded = self.load_procedures(self.create_db_function_script_path)
+db_ok = self.execute("SELECT CreateDB('"+name+"');", "ERROR CREATING DB")
+if procedures_loaded and db_ok:
+    self.close_connection()
+    self.make_connection(name, self.hostname, self.username, self.password)
+    db_exists = "NOTICE:  Database already exists\n" in self.conn.notices
+    if db_exists:
+        print('Database already exists. Skipping sample data creation.')
+        return self.database_exists
+        
+        
+Технику группировки комманд в отдельные методы я уже применял, например, при написании кода для дипломной работы:
+https://github.com/dlots/subcubic-3-vertex-cover/blob/main/vertex_cover_p3.py
+
+3. Выделил код, выполняющий поиск вершины степени 1 или 3, в отдельный метод.
+
+4. Выделил код, выполняющий поиск вершины степени 1 или 3 и находящий часть решения, в отдельный метод.
+
+5. Выделил код, определяющий, покрыт ли подграф "звезда", в отдельный метод.
+
+6. Выделил код, находящий вершинное покрытие от стартовой вершины до конечной, в отдельный метод.
+
+7. Выделил код, находящий покрытие между парой вершин степени 3, в отдельный метод.
+
+8. В методе __bfs_cover_compute длинные блоки кода были заменены методами, перечисленными в предыдущих пунктах,
+что существенно сократило длину метода и понизило риск ошибиться при работе с многочислеными переменными, а также повысило его читаемость.
+
+
+В том же файле, метод __solve_cover_for_3_3_bridge слишком длинный. Можно выделить из него следующие части, которые уже выделены комментариями, в отдельные методы:
+9. # traverse to right star, picking vertices along the way
+current_vertex = None
+previous_vertex = None
+path_length = 1
+if self.__iteration_candidates[left_center]:
+    previous_vertex = left_center
+    current_vertex = left_bridge_side
+if self.__iteration_candidates[left_bridge_side]:
+    previous_vertex = left_bridge_side
+    for neighbor in self.__graph.neighbors(left_bridge_side):
+        if neighbor != left_center:
+            current_vertex = neighbor
+if current_vertex is None:
+    previous_vertex = left_center
+    current_vertex = left_bridge_side
+    path_length = 2
+while current_vertex != right_bridge_side and current_vertex != right_center and previous_vertex != right_center:
+    for neighbor in self.__graph.neighbors(current_vertex):
+        if neighbor != previous_vertex:
+            debug.print('\t\t', neighbor)
+            previous_vertex = current_vertex
+            current_vertex = neighbor
+            path_length += 1
+            if path_length % 3 == 0:
+                self.__iteration_candidates[current_vertex] = True
+            break
+if current_vertex == right_bridge_side and path_length % 3 == 2:
+    self.__iteration_candidates[right_center] = True
+Следует выделить данный кусок кода в отдельный метод.
+    
+10. # cover right star
+right_star_covered, right_neighbors_candidates_sum = self.__is_star_covered(right_center)
+if not right_star_covered:
+    if right_neighbors_candidates_sum == 0:
+        # just go for minimum possible cover
+        self.__iteration_candidates[right_center] = True
+    else:
+        if self.__iteration_candidates[right_bridge_side]:
+            # take side vertex with highest degree (leaf is already covered; 3-vertex is better than 2-vertex)
+            max_degree = 0
+            max_degree_vertex = None
+            for neighbor in self.__graph.neighbors(right_center):
+                if neighbor != right_bridge_side:
+                    degree = self.__graph.degree(neighbor)
+                    if degree > max_degree:
+                        max_degree = degree
+                        max_degree_vertex = neighbor
+            self.__iteration_candidates[max_degree_vertex] = True
+        else:
+            # take other side vertex
+            for neighbor in self.__graph.neighbors(right_center):
+                if neighbor == right_bridge_side or self.__iteration_candidates[neighbor]:
+                    continue
+                else:
+                    self.__iteration_candidates[neighbor] = True
+                    break
+Следует выделить данный кусок кода в отдельный метод.
+                           
+
+11. 
