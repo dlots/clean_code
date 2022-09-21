@@ -1,0 +1,25 @@
+1. Во время написания кода:
+filename = 'scannet_subset20'
+dataset = VoxelSceneDataset(filename)
+
+// Переменная связана на этапе напиания кода, так как не предполагалось, что имя файла изменится.
+
+
+2. Во время компиляции кода (строго говоря, код в  Питоне не компилируется, но смысл тот же):
+voxel_grid_dimX = 64
+voxel_grid_dimY = 64
+voxel_grid_dimZ = 64
+
+...
+X = voxel_grid_dimX
+Y = voxel_grid_dimY
+Z = voxel_grid_dimZ
+voxel_grid = np.ndarray((X, Y, Z, VoxelData.NUMBER_OF_ATTRIBUTES), dtype=np.float64)
+                                
+// В данном случае переменые связаны на этапе компиляции, чтобы в случае необходимости можно было быстро поменять число вокселей на всех трех осях.
+
+
+3. Во время выполнения программы:
+neighbors_candidates_sum = sum([self.__iteration_candidates[neighbor] for neighbor in self.__graph.neighbors(center)])
+
+// Значение переменной неизвестно до выполнения программы, поэтому другого варианта связать переменную нет.
