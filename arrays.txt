@@ -1,0 +1,37 @@
+1. Вместо параллельной итерации по 3 массивам при помощи индексов, использовать zip()
+было:
+for vertex_index in range(len(coordinates)):
+    normalized_x = (xs[vertex_index] - min_xs) / max_range
+    normalized_y = (ys[vertex_index] - min_ys) / max_range
+    normalized_z = (zs[vertex_index] - min_zs) / max_range
+    
+стало:
+for x, y, z in zip(xs, ys, zs):
+    normalized_x = (x - min_xs) / max_range
+    normalized_y = (y - min_ys) / max_range
+    normalized_z = (z - min_zs) / max_range
+
+
+2. Вместо перебора индексов и получения вокселя по координатам, представить 4d массив вокселей (ё) в 2d виде (список данных вокселей).
+было:
+for x in range(len(voxel_grid[0])):
+    for y in range(len(voxel_grid[1])):
+        for z in range(len(voxel_grid[2])):
+            voxel = voxel_grid[x][y][z]
+            ...
+
+стало:
+X = voxel_grid_dimX
+Y = voxel_grid_dimY
+Z = voxel_grid_dimZ
+for voxel in voxel_grid.reshape((X*Y*Z, VoxelData.NUMBER_OF_ATTRIBUTES)):
+    ...
+
+3.
+
+
+4.
+
+
+5.
+
