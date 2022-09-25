@@ -1,0 +1,164 @@
+1. Удалил бесполезный комментарий (4. Шум)
+было:
+if db_exists:
+    # Database already exists. Skipping sample data creation.
+    return self.database_exists
+    
+стало:
+if db_exists:
+    return self.database_exists
+
+2. Убрал комментарий и вместо этого сделал более информативным название процедуры (12. Не используйте комментарии там, где можно использовать функцию или переменную)
+было:
+# DB created. Inserting sample data.
+procedures_loaded = self.load_procedures(self.functions_and_procedures_script_path)
+if procedures_loaded:
+    self.execute("CALL CreateTables();", "ERROR CREATING TABLE STRUCTURE")
+    self.execute("CALL FillAllTables();", "ERROR FILLING ALL TABLES")
+    return self.database_created
+
+стало:
+procedures_loaded = self.load_procedures(self.functions_and_procedures_script_path)
+if procedures_loaded:
+    self.execute("CALL CreateTables();", "ERROR CREATING TABLE STRUCTURE")
+    self.execute("CALL FillAllTablesWithSampleData ();", "ERROR FILLING ALL TABLES")
+    return self.database_created
+
+3. Убрал комментарий и вместо этого сделал более информативным название процедуры (12. Не используйте комментарии там, где можно использовать функцию или переменную)
+было:
+    # corner cases (special handling needed when solving for cover)
+    # leaf or "double path"
+    if self.__graph.degree(second_vertex) == 1 or other_neighbor == second_vertex:
+        self.__solve_cover_for_3_vertex_and_stop_vertex(first_vertex, neighbor, second_vertex)
+        continue
+    
+стало:
+def is_corner_case(second_vertex, other_neighbor):
+    return self.__graph.degree(second_vertex) == 1 or other_neighbor == second_vertex
+
+4. Удалил бесполезный комментарий (4. Шум)
+было:
+# found "leaf cycle"
+if second_vertex == first_vertex:
+    leaf_cycle = True
+    self.__solve_cover_for_3_vertex_and_stop_vertex(first_vertex, neighbor, second_vertex)
+    continue
+    
+стало:
+if second_vertex == first_vertex:
+    leaf_cycle = True
+    self.__solve_cover_for_3_vertex_and_stop_vertex(first_vertex, neighbor, second_vertex)
+    continue
+
+5. Удалил закомментированный код (11. Закомментированный код)
+было:
+for vertex_index in range(len(coordinates)):
+    #if vertex_index % 1000 == 0:
+    #    print(vertex_index)
+    ...
+    
+стало:
+for vertex_index in range(len(coordinates)):
+  ...
+
+6. Удалил закомментированный код (11. Закомментированный код)
+было:
+for symbol_pos in range(len(text)):
+    #print(text[symbol_pos], end='')
+    self.__state_transition(text[symbol_pos], symbol_pos)
+    
+стало:
+for symbol_pos in range(len(text)):
+    self.__state_transition(text[symbol_pos], symbol_pos)
+
+7. Ненужные пояснения к объявленным переменным (12. Не используйте комментарии там, где можно использовать функцию или переменную)
+было:
+def boyer_moore_horspool(st, subst):
+    indices = []  # искомый массив индексов
+    compares = 0
+    unique = set()  # уникальные символы в подстроке
+    offsets = {}  # словарь смещений
+    
+стало:
+def boyer_moore_horspool(st, subst):
+    indices_of_found_substrings = []
+    compares = 0
+    unique_symbols = set()
+    offsets = {}
+
+8. Комментарий не связан со строкой, рядом с которой он расположен, удалил (1. Неочевидные комментарии)
+было:
+# поиск подстроки в строке
+k = len(subst) - 1
+
+стало:
+k = len(subst) - 1
+
+9. Ненужные пояснения к объявленным переменным (12. Не используйте комментарии там, где можно использовать функцию или переменную)
+было:
+j = len(subst) - 1  # счетчик проверяемого символа в подстроке
+i = k  # счетчик проверяемого символа в строке
+
+стало:
+current_symbol_in_substring = len(subst) - 1
+current_symbol_in_string = k
+
+10. Комментарий не несет новой информации (4. Шум)
+было:
+# если остаток текста >= длине слова и первый символ не совпадает
+if i >= len(text) - len(st) and text[i] != st[0]:
+
+стало:
+if i >= len(text) - len(st) and text[i] != st[0]:
+
+11. Комментарий вместо очевидного названия константы (12. Не используйте комментарии там, где можно использовать функцию или переменную)
+было:
+d = 256  # мощность входного алфавита
+
+стало:
+ALPHABET_LENGTH = 256
+
+12. Комментарий вместо очевидного названия константы (12. Не используйте комментарии там, где можно использовать функцию или переменную)
+было:
+p = 0  # хэш для subst
+t = 0  # хэш для st
+
+стало:
+substring_hash = 0
+string_hash = 0
+
+13. Убрал разделитель (5. Позиционные маркеры)
+было:
+# ----------------------------------------------------------------------------------------------------------------------
+class tree:
+
+стало:
+class Tree:
+
+14. Удалил закомментированный код (11. Закомментированный код)
+было:
+self.A_equal = A_equal
+self.b_equal = b_equal
+self.status = 0
+# print("fun = ", self.fun, self.obj, "num = ", self.num, "best", if_better(self.fun, self.num))
+
+стало:
+self.A_equal = A_equal
+self.b_equal = b_equal
+self.status = 0
+
+15. Удалил закомментированный код (11. Закомментированный код)
+было:
+# def count_intersections_bfs(graph):
+#     queued = [False for _ in graph]
+#     backtrack = [[] for _ in graph]
+#     possible_candidates = [False for _ in graph]
+#     intersections = 0
+#     intersections_axis = []
+#     pairs = 0
+#     queue = deque()
+#     double_paths = []
+#
+#     ... Тут очень много кода
+#
+#     return pairs, intersections
