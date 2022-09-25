@@ -1,23 +1,113 @@
-1.
+1. Представление намерений
+for coordinate in coordinates:
+    # Выполняем поворот осей для приведения к стандартному виду
+    coordinate[1], coordinate[2] = coordinate[2], -coordinate[1]
+    xs.append(coordinate[0])
+    ys.append(coordinate[1])
+    zs.append(coordinate[2])
 
-2.
+2. Усиление
+# Обычно, для нахождения среднего значения чего либо, сумму компонентов делят на их количество.
+# Но в случае усреднения RGB цветов, нужно складывать квадраты, и после деления взять квадратный корень.
+# Так получается более качественное усреднение.
+# https://sighack.com/post/averaging-rgb-colors-the-right-way
+voxel[VoxelData.RED] = int(np.floor(np.sqrt(voxel[VoxelData.RED] / voxel[VoxelData.LENGTH])))
+voxel[VoxelData.GREEN] = int(
+    np.floor(np.sqrt(voxel[VoxelData.GREEN] / voxel[VoxelData.LENGTH])))
+voxel[VoxelData.BLUE] = int(np.floor(np.sqrt(voxel[VoxelData.BLUE] / voxel[VoxelData.LENGTH])))
 
-3.
+3. Прояснение.
+def generate_weighted_halin_graph(r=3, nodes=10, min_weight=1, max_weight=10):
+    ...
+    # для построения графа Халина необходимо объединить все листья
+    # исходного дерева в цикл с сохранением планарности графа
+    leaves = [node for node in graph.nodes() if graph.degree(node) == 1]
+    first_in_cycle = -1
+    last_in_group = -1
 
-4.
+    for edge in tree.edges():
+        weight = randint(min_weight, max_weight)
+        graph[edge[0]][edge[1]]['weight'] = weight
+        tree[edge[0]][edge[1]]['weight'] = weight
 
-5.
+    for leaf in leaves:
+        ...
+    ...
+    
+4. Усиление
+# необходимо найти 2 ребра из 3, дальше не имеет смысла продолжать цикл
+    if center_edge_in_solution + side_edge_0_in_solution + side_edge_1_in_solution == 2:
+        break
 
-6.
+5. Предупреждения о последствиях
+# если граф распался на компоненты связности, необходимо объединить их в 1 граф,
+# при этом он должен остаться субкубическим, иначе алгоритм отработает некорректно
+components = [component for component in connected_components(graph)]
+max_length = 0
+max_component = 0
+for i, component in enumerate(components):
+    ...
 
-7.
+6. Представление намерений
+# check what candidates are found to optimize solution
+if self.__iteration_candidates[left_bridge_side]:
+    # candidate on bridge; take one of sides; not the side we came from (previous is 3-3 covered)
+    for neighbor in self.__graph.neighbors(left_center):
+        if neighbor == left_bridge_side or neighbor == parent_vertex:
+            continue
+        else:
+            self.__iteration_candidates[neighbor] = True
+            break
+else:  # candidate on side, need to take left_bridge_side to take cover more far away
+    self.__iteration_candidates[left_bridge_side] = True
 
-8.
+7. Представление намерений
+# check what candidates are found to optimize solution
+if self.__iteration_candidates[right_bridge_side]:
+    # take side vertex with highest degree (leaf is already covered; 3-vertex is better than 2-vertex)
+    max_degree = 0
+    max_degree_vertex = None
+    for neighbor in self.__graph.neighbors(right_center):
+        if neighbor != right_bridge_side:
+            degree = self.__graph.degree(neighbor)
+            if degree > max_degree:
+                max_degree = degree
+                max_degree_vertex = neighbor
+    self.__iteration_candidates[max_degree_vertex] = True
+else:
+    # take other side vertex
+    for neighbor in self.__graph.neighbors(right_center):
+        if neighbor == right_bridge_side or self.__iteration_candidates[neighbor]:
+            continue
+        else:
+            self.__iteration_candidates[neighbor] = True
+            break
 
-9.
+8. TODO
+voxel[VoxelData.LABEL] = voxel[VoxelData.LABEL] / voxel[VoxelData.LENGTH]
+# TODO: wrong label count! Need to find most frequent label, not the mean of all labels!
 
-10.
+9. TODO
+for vertex in self.__graph:
+    if self.__graph.degree(vertex) == 1:
+        leaves_count += 1
+        self.__leaf_iteration(vertex)
+        break  # TODO: remove break to check all leaves; then construct cover with strongest candidates
 
-11.
+10. Прояснение
+# save to check if the second path leads to the same 3-vertex
+if other_neighbor is None:
+    other_neighbor = second_vertex
 
-12.
+11. Информативные комментарии
+// Node to delete may be a root of T1 subtree. After that, a pointer
+// to deleted memory will remain in splitResult.first. But in remove(),
+// new T1 subtree root is set to this->root.
+if (splitResult.first == toDelete)
+{
+    splitResult.first = root;
+}
+
+12. Информативные комментарии
+// splay(node) is already called in search(), so don't need to perform splay again
+root = merge(node->left, node->right);
