@@ -103,4 +103,61 @@ if not right_star_covered:
 Следует выделить данный кусок кода в отдельный метод.
                            
 
-11. 
+11. Вместо выделения блока кода при помощи комментария, можно создать отдельную фунцию
+было:
+# формирование словаря смещений
+# смещения для всех символов, кроме последнего
+for i in range(len(subst) - 2, -1, -1):  # итерации с предпоследнего символа
+    if subst[i] not in unique:  # если символ еще не добавлен в словарь
+        unique.add(subst[i])
+        offsets[subst[i]] = len(subst) - i - 1  # m=6
+            
+стало:
+def calculate_offsets(susbt, unique):
+    for i in range(len(subst) - 2, -1, -1):  # итерации с предпоследнего символа
+    if subst[i] not in unique:  # если символ еще не добавлен в словарь
+        unique.add(subst[i])
+        offsets[subst[i]] = len(subst) - i - 1  # m=6
+        return offsets
+
+    ...
+    
+    offsets = calculate_offsets(susbt, unique)
+
+
+12. Выделить блок кода в отдельную функцию
+было:
+def knuth_morris_pratt(text, st):
+    compare = 0
+    pref = [0]
+    for i in range(1, len(st)):
+        j = pref[i - 1]
+        while j > 0 and st[j] != st[i]:
+            j = pref[j - 1]
+        if st[j] == st[i]:
+            j = j + 1
+        pref.append(j)
+
+стало:
+def prefix(st):
+    output = [0]
+    for i in range(1, len(st)):
+        j = output[i - 1]
+        while j > 0 and st[j] != st[i]:
+            j = output[j - 1]
+        if st[j] == st[i]:
+            j = j + 1
+        output.append(j)
+    return output
+
+def knuth_morris_pratt(text, st):
+    compare = 0
+    pref = prefix(st)
+
+13.
+
+
+14.
+
+
+15.
