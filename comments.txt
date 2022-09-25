@@ -1,0 +1,48 @@
+3.1
+1.
+
+2.
+
+3.
+
+4.
+
+5.
+
+6.
+
+7.
+
+
+3.2
+1. Код понятен и без комментария
+было:
+if db_exists:
+    # Database already exists. Skipping sample data creation.
+    return self.database_exists
+    
+стало:
+if db_exists:
+    return self.database_exists
+
+2. Убрал комментарий и вместо этого сделал более информативным название процедуры.
+было:
+ # DB created. Inserting sample data.
+procedures_loaded = self.load_procedures(self.functions_and_procedures_script_path)
+if procedures_loaded:
+    self.execute("CALL CreateTables();", "ERROR CREATING TABLE STRUCTURE")
+    self.execute("CALL FillAllTables();", "ERROR FILLING ALL TABLES")
+    return self.database_created
+
+стало:
+procedures_loaded = self.load_procedures(self.functions_and_procedures_script_path)
+if procedures_loaded:
+    self.execute("CALL CreateTables();", "ERROR CREATING TABLE STRUCTURE")
+    self.execute("CALL FillAllTablesWithSampleData ();", "ERROR FILLING ALL TABLES")
+    return self.database_created
+
+3.
+
+4.
+
+5.
